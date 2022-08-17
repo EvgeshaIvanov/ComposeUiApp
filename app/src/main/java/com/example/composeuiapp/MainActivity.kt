@@ -3,15 +3,16 @@ package com.example.composeuiapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composeuiapp.ui.theme.ComposeUiAppTheme
@@ -59,14 +60,57 @@ fun CustomCardView(money: Int) {
     val income = (1_000_000 / money) * 0.1
     Card(
         Modifier
-            .size(width = 180.dp, height = 100.dp), backgroundColor = Color.DarkGray
+            .padding(start = 32.dp, end = 32.dp)
+            .fillMaxWidth()
+            .size(width = 0.dp, height = 150.dp),
+        elevation = 20.dp,
+        shape = MaterialTheme.shapes.medium
     ) {
-        Column() {
-            Text(text = "Balance", color = Color.Black)
-            Text(text = "$$money", color = Color.Black)
-            Text(text = "$income%")
-            Button(onClick = { }, modifier = Modifier.padding(top = 8.dp)) {
-                Text(text = "Info")
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colors.secondary,
+                            MaterialTheme.colors.primaryVariant,
+                        )
+                    )
+                )
+        ) {
+            Column(
+                Modifier.padding(start = 8.dp)
+            ) {
+                Text(text = "Balance", color = Color.Black)
+                Text(text = "$$money", color = Color.Black)
+                Text(text = "$income%")
+                Button(onClick = { }) {
+                    Text(text = "Info")
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun CurrencyInfo(list: List<CurrencyModel>) {
+    list.forEach { model ->
+        Box(Modifier.fillMaxWidth()) {
+            Row(Modifier.padding(start = 8.dp, end = 8.dp)) {
+                Column(horizontalAlignment = Alignment.Start) {
+                    Text(text = model.companyDefaultName, color = Color.White)
+                    Text(text = model.companyShortName, color = Color.White)
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = model.graphic, color = Color.White)
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(text = model.defaultCurrency.toString(), color = Color.White)
+                    Text(text = model.incomeCurrency.toString(), color = Color.White)
+                }
             }
         }
     }
@@ -78,9 +122,11 @@ fun DefaultPreview() {
     ComposeUiAppTheme {
         Column(Modifier.background(Color.Black)) {
             DayStatus()
-            UserName(name = "Eugene", surname = "Ivanov")
+            UserName(name = "Sample", surname = "Name")
             RandomData()
             CustomCardView(244000)
+            Text(text = "Trending", color = Color.White, fontFamily = FontFamily.Cursive)
+            CurrencyInfo(list = currencyListInfo)
         }
     }
 }
